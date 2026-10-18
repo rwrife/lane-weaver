@@ -1,0 +1,8 @@
+{
+  "name": "Weaver.Persistence",
+  "rootNamespace": "Weaver.Persistence",
+  "references": ["Weaver.Core"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false
+}

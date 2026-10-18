@@ -1,0 +1,8 @@
+{
+  "name": "Weaver.UI",
+  "rootNamespace": "Weaver.UI",
+  "references": ["Weaver.Core", "Weaver.Input", "Weaver.Presentation"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false
+}

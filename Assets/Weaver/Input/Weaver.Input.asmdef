@@ -1,0 +1,8 @@
+{
+  "name": "Weaver.Input",
+  "rootNamespace": "Weaver.Input",
+  "references": ["Weaver.Core", "Unity.InputSystem"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false
+}
