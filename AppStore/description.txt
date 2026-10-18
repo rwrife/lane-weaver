@@ -1,0 +1,13 @@
+Lane Weaver is a local-first arcade motorcycle traffic-dodger. Weave through dense highway traffic, chain clean passes, and chase your own distance records on Windows with keyboard or gamepad, and on phones and tablets with touch controls.
+
+Planned features:
+- Three original routes: a desert canyon, a neon tunnel, and a coastal city.
+- Traffic that gets faster and denser the longer you survive.
+- Clean-pass score multipliers for close, well-timed lane changes.
+- Personal best records per route, stored only on your device, with JSON export and restore.
+- Options for reduced motion, flash limiting, remappable controls, scalable text, and high contrast.
+- Optional tilt steering on mobile, always with a touch or button alternative.
+
+No account, no ads, no in-app purchases, and no network connection required.
+
+Status: in development. This description lists planned features and will be updated as each one ships.

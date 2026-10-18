@@ -1,0 +1,16 @@
+{
+  "platform": "unity-multiplatform-game",
+  "unity_version_line": "6000.3",
+  "unity_channel": "6.3 LTS",
+  "primary_build_target": "StandaloneWindows64",
+  "secondary_build_targets": ["Android", "iOS"],
+  "tablets_enabled": true,
+  "bundle_identifier": "com.infinityball.laneweaver",
+  "android_application_id": "com.infinityball.laneweaver",
+  "msix_identity_name": "com.infinityball.laneweaver",
+  "ux_strategy": "B-custom-branded",
+  "ci_runner": "windows-latest",
+  "unity_secret_names": ["UNITY_LICENSE", "UNITY_EMAIL", "UNITY_PASSWORD"],
+  "asc_secret_names": ["ASC_KEY_ID", "ASC_ISSUER_ID", "ASC_KEY_P8", "ASC_TEAM_ID"],
+  "prohibited_engines": ["Flutter", "React Native", "Expo", "Kotlin Multiplatform", ".NET MAUI", "SpriteKit", "Flame"]
+}
