@@ -11,6 +11,7 @@
 
 # Unity-generated project files
 *.csproj
+!tests/Weaver.Core.Tests.csproj
 *.unityproj
 *.sln
 *.suo
@@ -35,6 +36,8 @@ crashlytics-build.properties
 
 # Test results
 /TestResults/
+bin/
+obj/
 *.trx
 coverage/
 

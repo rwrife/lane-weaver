@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  structure-and-core-linux:
+    name: Structure Validator + Core Tests (Linux/Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Structure Validator in Docker
+        run: docker run --rm -v "$PWD:/work:ro" -w /work python:3.12 python3 tools/validate_structure.py
+
+      - name: Run Core Rules Tests in Docker
+        run: |
+          docker run --rm \
+            -v "$PWD:/src:ro" \
+            -w /build \
+            mcr.microsoft.com/dotnet/sdk:8.0 \
+            bash -c "cp -r /src/. /build && dotnet test tests/Weaver.Core.Tests.csproj --verbosity normal"
+
+  unity-editmode-windows:
+    name: Unity EditMode Tests (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Check Unity license credentials
+        id: license-check
+        shell: bash
+        env:
+          HAS_LICENSE: ${{ secrets.UNITY_LICENSE != '' }}
+          HAS_EMAIL: ${{ secrets.UNITY_EMAIL != '' }}
+          HAS_PASSWORD: ${{ secrets.UNITY_PASSWORD != '' }}
+        run: |
+          echo "Checking secret availability by name..."
+          missing=()
+          [ "$HAS_LICENSE" = "true" ] || missing+=(UNITY_LICENSE)
+          [ "$HAS_EMAIL" = "true" ] || missing+=(UNITY_EMAIL)
+          [ "$HAS_PASSWORD" = "true" ] || missing+=(UNITY_PASSWORD)
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error title=Unity Credentials Missing::The following repo secrets are missing: ${missing[*]}"
+            echo "BLOCKED: Unity EditMode and player builds cannot run unattended without Unity license secrets."
+            echo "Expected secret names: UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD."
+            echo "Run was NOT faked green. Failing the step honestly."
+            exit 1
+          fi
+          echo "All Unity credentials present."
+
+      - name: Run Unity EditMode Tests
+        if: steps.license-check.outcome == 'success'
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          unityVersion: 6000.3.0f1
+          testMode: EditMode
+          artifactsPath: artifacts

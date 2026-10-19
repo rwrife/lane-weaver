@@ -1,0 +1,8 @@
+{
+  "name": "Weaver.Presentation",
+  "rootNamespace": "Weaver.Presentation",
+  "references": ["Weaver.Core", "Weaver.Physics", "Weaver.Routes"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false
+}

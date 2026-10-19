@@ -1,0 +1,8 @@
+{
+  "name": "Weaver.Physics",
+  "rootNamespace": "Weaver.Physics",
+  "references": ["Weaver.Core"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false
+}
