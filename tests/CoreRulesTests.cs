@@ -91,6 +91,46 @@ namespace Weaver.Core.Tests
         }
 
         [Fact]
+        public void RecordRoundTripPreservesEscapesAndUnicode()
+        {
+            var book = new RecordBook();
+            book.Runs.Add(new RunRecord { Route = "Quote\" Back\\ Tab\t Line\n \u00e9\u2603", Score = 0 });
+            var restored = RecordCodec.Import(RecordCodec.Export(book));
+            Assert.Equal(book.Runs[0].Route, restored.Runs[0].Route);
+            Assert.Empty(RecordCodec.Import(RecordCodec.Export(new RecordBook())).Runs);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("not json")]
+        [InlineData("{}")]
+        [InlineData("{\"payload\":\"{}\",\"checksum\":\"00\"}")]
+        [InlineData("{\"payload\":1,\"checksum\":\"00\"}")]
+        [InlineData("[1,2,3]")]
+        [InlineData("{\"payload\":\"x\",\"checksum\":\"y\"} trailing")]
+        public void MalformedRecordJsonIsRejectedWithoutCrashing(string json)
+            => Assert.ThrowsAny<Exception>(() => RecordCodec.Import(json));
+
+        [Fact]
+        public void ValidChecksumButBadSchemaIsRejected()
+        {
+            // Build envelopes whose checksum is valid for a schema-invalid payload.
+            foreach (string payload in new[] { "{\"runs\":[{\"route\":\"A\",\"score\":-5}]}", "{\"runs\":[{\"route\":\"\",\"score\":1}]}", "{\"runs\":{}}" })
+            {
+                string envelope = "{\"payload\":" + JsonQuote(payload) + ",\"checksum\":\"" + Sha(payload) + "\"}";
+                Assert.Throws<InvalidDataException>(() => RecordCodec.Import(envelope));
+            }
+        }
+
+        private static string JsonQuote(string s) => "\"" + s.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+
+        private static string Sha(string s)
+        {
+            using (var sha = System.Security.Cryptography.SHA256.Create())
+                return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(s))).Replace("-", "").ToLowerInvariant();
+        }
+
+        [Fact]
         public void ChecksumDetectsTampering()
         {
             var book = new RecordBook();

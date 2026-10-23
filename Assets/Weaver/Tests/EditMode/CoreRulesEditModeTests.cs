@@ -47,6 +47,18 @@ namespace Weaver.Tests.EditMode
         }
 
         [Test]
+        public void RecordEscapesAndMalformedInput()
+        {
+            var book = new RecordBook();
+            book.Runs.Add(new RunRecord { Route = "Quote\" Back\\ Snow\u2603", Score = 0 });
+            string json = RecordCodec.Export(book);
+            Assert.AreEqual("Quote\" Back\\ Snow\u2603", RecordCodec.Import(json).Runs[0].Route);
+            Assert.Throws<InvalidDataException>(() => RecordCodec.Import("{}"));
+            Assert.Throws<InvalidDataException>(() => RecordCodec.Import("[1,2]"));
+            Assert.Throws<InvalidDataException>(() => RecordCodec.Import("{\"payload\":\"x\",\"checksum\":\"00\"}"));
+        }
+
+        [Test]
         public void RecordsRoundTripAndTamperDetection()
         {
             var book = new RecordBook();
